@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="800.0" prefWidth="1500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Main.CreateNewProfileController">
+   <children>
+      <ImageView fitHeight="800.0" fitWidth="1500.0">
+         <image>
+            <Image url="@../images/faded_start.png" />
+         </image>
+      </ImageView>
+      <TextField fx:id="nameTextBox" layoutX="550.0" layoutY="225.0" prefHeight="50.0" prefWidth="250.0" promptText="Enter your Name" style="-fx-background-color: #dcffcc;">
+         <font>
+            <Font name="Gadugi Bold" size="18.0" />
+         </font>
+      </TextField>
+      <Button fx:id="startButton" layoutX="610.0" layoutY="280.0" mnemonicParsing="false" onMouseClicked="#userCreation" prefHeight="50.0" style="-fx-background-color: #dcffcc;" text="Start Game" textFill="#1578a5">
+         <font>
+            <Font name="Gadugi Bold" size="18.0" />
+         </font>
+      </Button>
+      <Button fx:id="goBackMainMenuButton" layoutX="1210.0" layoutY="715.0" mnemonicParsing="false" onMouseClicked="#gobackMainMenu" prefHeight="40.0" style="-fx-background-color: #dcffcc;" text="Go back to Main Menu" textFill="#1578a5">
+         <font>
+            <Font name="Gadugi Bold" size="18.0" />
+         </font>
+      </Button>
+      <Label fx:id="userCreatedLabel" alignment="CENTER" layoutX="514.0" layoutY="359.0" prefHeight="101.0" prefWidth="333.0" style="-fx-background-color: #dcffcc;" text="User Creation Successful !!" textAlignment="CENTER" textFill="#a3151b" visible="false">
+         <font>
+            <Font name="Gadugi Bold" size="24.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

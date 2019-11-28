@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="800.0" prefWidth="1500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Main.GamePauseMenuController">
+   <children>
+      <ImageView fitHeight="800.0" fitWidth="1500.0">
+         <image>
+            <Image url="@../images/faded_start.png" />
+         </image>
+      </ImageView>
+      <VBox layoutX="550.0" layoutY="225.0" prefHeight="247.0" prefWidth="243.0" spacing="10.0" AnchorPane.bottomAnchor="328.0" AnchorPane.leftAnchor="550.0" AnchorPane.rightAnchor="707.0" AnchorPane.topAnchor="225.0">
+         <children>
+            <Button fx:id="resumeButton" alignment="CENTER" mnemonicParsing="false" onMouseClicked="#resumeGame" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #dcffcc;" text="RESUME GAME" textFill="#1578a5">
+               <font>
+                  <Font name="Gadugi Bold" size="18.0" />
+               </font>
+            </Button>
+            <Button fx:id="saveButton" alignment="CENTER" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onMouseClicked="#saveGame" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #dcffcc;" text="SAVE GAME" textFill="#1578a5">
+               <font>
+                  <Font name="Gadugi Bold" size="18.0" />
+               </font>
+            </Button>
+            <Button fx:id="exitButton" alignment="CENTER" layoutX="10.0" layoutY="60.0" mnemonicParsing="false" onMouseClicked="#exitToMainMenu" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #dcffcc;" text="EXIT TO MAIN MENU" textFill="#1578a5">
+               <font>
+                  <Font name="Gadugi Bold" size="18.0" />
+               </font>
+            </Button>
+         </children>
+         <padding>
+            <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+         </padding>
+      </VBox>
+   </children>
+</AnchorPane>
