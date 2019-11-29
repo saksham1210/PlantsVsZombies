@@ -97,12 +97,18 @@ public class gamePreviewController {
 	public void handleDragDropped(DragEvent event)
 	{
 		Image clipboard_img= (Image) event.getDragboard().getContent(DataFormat.IMAGE);
-		ImageView imgview = new ImageView(clipboard_img);
-		//System.out.println(clipboard_img.getHeight());
+		Node node= event.getPickResult().getIntersectedNode();
+		ImageView img_v=(ImageView) node;
+		if (img_v.getImage()==null)
+		{
+			img_v.setImage(clipboard_img);
+		}
+		Integer index_x=GridPane.getColumnIndex(node);
+		Integer index_y=GridPane.getRowIndex(node);
 		if (clipboard_img.getHeight()==81.0) //PEASHOOTER
 		{
 			System.out.println("Im Peashooter");
-			imgview.setOnMouseClicked(this::shootPea);
+			img_v.setOnMouseClicked(this::shootPea);
 		}
 		else if (clipboard_img.getHeight()==85.0) //SUNFLOWER
 		{
@@ -120,12 +126,9 @@ public class gamePreviewController {
 		{
 			System.out.println("Im Landmine");
 		}
-		Node node= event.getPickResult().getIntersectedNode();
-		Integer index_x=GridPane.getColumnIndex(node);
-		Integer index_y=GridPane.getRowIndex(node);
 		System.out.print(index_x + " ");
 		System.out.println(index_y) ;
-		gridPane_.add(imgview,index_x,index_y);
+		gridPane_.add(img_v,index_x,index_y);
 	}
 	public void handleDragDone() {	}
 	public void moveZombie()
