@@ -36,17 +36,6 @@ public class gamePreviewController {
 	public GridPane gridPane_;
 	public Image img;
 
-//	public double computeSnapshotSimilarity(Image image1, Image image2) {
-//		int width = (int) image1.getWidth();
-//		int height = (int) image1.getHeight();
-//		PixelReader reader1 = image1.getPixelReader();
-//		PixelReader reader2 = image2.getPixelReader();
-//		double nbNonSimilarPixels = IntStream.range(0, width).parallel()
-//									.mapToLong(i -> IntStream.range(0, height).parallel().filter(j -> reader1.getArgb(i, j) != reader2.getArgb(i, j)).count()).sum();
-//		System.out.println("Im here!!!");
-//		return 100d - nbNonSimilarPixels / (width * height) * 100d;
-//	}
-
 	public void pauseGame() {
 		try {
 			Parent root = FXMLLoader.load(getClass().getResource("GamePauseMenu.fxml"));
@@ -114,69 +103,14 @@ public class gamePreviewController {
 	public void handleDragDropped(DragEvent event)
 	{
 		Image clipboard_img= (Image) event.getDragboard().getContent(DataFormat.IMAGE);
-//		Image peashooter_img=new Image("file:C:/Users/Saksham Dhull/Desktop/PlantVSZombies/src/Main/PvZpics/1769829-plant_peashooter_thumb.png");
-//		Image sunflower_img=new Image("file:C:/Users/Saksham Dhull/Desktop/PlantVSZombies/src/Main/PvZpics/Sunflower2009HD.png");
-//		Image cherrybomb_img= new Image("file:C:/Users/Saksham Dhull/Desktop/PlantVSZombies/src/Main/PvZpics/Cherrybomb.png");
-//		Image threepeater_img=new Image("file:C:/Users/Saksham Dhull/Desktop/PlantVSZombies/src/Main/PvZpics/Threepeater2009HD.png");
-//		Image landmine_img=new Image("file:C:/Users/Saksham Dhull/Desktop/PlantVSZombies/src/Main/PvZpics/PotatoMineHD.png");
-//		if (computeSnapshotSimilarity(clipboard_img,peashooter_img)>95)
-//		{
-//			Image image=new Image("file:C:/Users/Saksham Dhull/Desktop/PlantVSZombies/src/Main/PvZpics/Peashooter_transparent_gif.gif");
-//			ImageView imgview = new ImageView(image);
-//			Node node= event.getPickResult().getIntersectedNode();
-//			Integer index_x=GridPane.getColumnIndex(node);
-//			Integer index_y=GridPane.getRowIndex(node);
-//			System.out.print(index_x + " ");
-//			System.out.println(index_y) ;
-//			gridPane_.add(imgview,index_x,index_y);
-//		}
-//		else if (computeSnapshotSimilarity(clipboard_img,sunflower_img)>95)
-//		{
-//			System.out.println("Im here!!!");
-//			Image image1=new Image("file:C:/Users/Saksham Dhull/Desktop/PlantVSZombies/src/Main/PvZpics/5dbd90c75276b768463076.gif");
-//			ImageView imgview1 = new ImageView(image1);
-//			Node node= event.getPickResult().getIntersectedNode();
-//			Integer index_x=GridPane.getColumnIndex(node);
-//			Integer index_y=GridPane.getRowIndex(node);
-//			System.out.print(index_x + " ");
-//			System.out.println(index_y) ;
-//			gridPane_.add(imgview1,index_x,index_y);
-//		}
-//		else if (computeSnapshotSimilarity(clipboard_img,landmine_img)>95)
-//		{
-//			Image image2=new Image("file:C:/Users/Saksham Dhull/Desktop/PlantVSZombies/src/Main/PvZpics/5dbd919ed7c8e419512925.gif");
-//			ImageView imgview2 = new ImageView(image2);
-//			Node node= event.getPickResult().getIntersectedNode();
-//			Integer index_x=GridPane.getColumnIndex(node);
-//			Integer index_y=GridPane.getRowIndex(node);
-//			System.out.print(index_x + " ");
-//			System.out.println(index_y) ;
-//			gridPane_.add(imgview2,index_x,index_y);
-//		}
-//		else if (computeSnapshotSimilarity(clipboard_img,threepeater_img)>95)
-//		{
-//			Image image3=new Image("file:C:/Users/Saksham Dhull/Desktop/PlantVSZombies/src/Main/PvZpics/Threepeater2009HD.png");
-//			ImageView imgview3 = new ImageView(image3);
-//			Node node= event.getPickResult().getIntersectedNode();
-//			Integer index_x=GridPane.getColumnIndex(node);
-//			Integer index_y=GridPane.getRowIndex(node);
-//			System.out.print(index_x + " ");
-//			System.out.println(index_y) ;
-//			gridPane_.add(imgview3,index_x,index_y);
-//		}
-//		else if (computeSnapshotSimilarity(clipboard_img,cherrybomb_img)>95)
-//		{
-//			Image image4=new Image("file:C:/Users/Saksham Dhull/Desktop/PlantVSZombies/src/Main/PvZpics/Cherrybomb.png");
-			ImageView imgview = new ImageView(clipboard_img);
-			imgview.setOnMouseClicked(e -> shootPea(e));
-			Node node= event.getPickResult().getIntersectedNode();
-			Integer index_x=GridPane.getColumnIndex(node);
-			Integer index_y=GridPane.getRowIndex(node);
-			System.out.print(index_x + " ");
-			System.out.println(index_y) ;
-			gridPane_.add(imgview,index_x,index_y);
-//		}
-
+		ImageView imgview = new ImageView(clipboard_img);
+		imgview.setOnMouseClicked(e -> shootPea(e));
+		Node node= event.getPickResult().getIntersectedNode();
+		Integer index_x=GridPane.getColumnIndex(node);
+		Integer index_y=GridPane.getRowIndex(node);
+		System.out.print(index_x + " ");
+		System.out.println(index_y) ;
+		gridPane_.add(imgview,index_x,index_y);
 	}
 	public void handleDragDone() {	}
 	public void moveZombie()
