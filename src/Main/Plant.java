@@ -14,7 +14,7 @@ public class Plant {
     private int Cost;
     private int lastBought;
     private boolean isAlive;
-    private Tile myTile;
+//    private Tile myTile;
 
     public void getAttacked(int attack_val)
     {
@@ -53,9 +53,9 @@ public class Plant {
         isAlive = alive;
     }
 
-    public void setMyTile(Tile myTile) {
-        this.myTile = myTile;
-    }
+//    public void setMyTile(Tile myTile) {
+//        this.myTile = myTile;
+//    }
 
     public int getPos_x() {
         return pos_x;
@@ -89,7 +89,7 @@ public class Plant {
         return isAlive;
     }
 
-    public Tile getMyTile() {
-        return myTile;
-    }
+//    public Tile getMyTile() {
+//        return myTile;
+//    }
 }

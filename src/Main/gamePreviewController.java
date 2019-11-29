@@ -2,21 +2,16 @@ package Main;
 
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.PixelReader;
 import javafx.scene.input.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
-import java.awt.image.BufferedImage;
-import java.util.stream.IntStream;
 
 public class gamePreviewController {
 	public Button pauseButton;
@@ -25,7 +20,6 @@ public class gamePreviewController {
 	public ImageView cherrybomb;
 	public ImageView threepeater;
 	public ImageView landmine;
-	public ImageView shoot;
 	public ImageView pea;
 	public ImageView lawnmower1;
 	public ImageView lawnmower2;
@@ -104,7 +98,28 @@ public class gamePreviewController {
 	{
 		Image clipboard_img= (Image) event.getDragboard().getContent(DataFormat.IMAGE);
 		ImageView imgview = new ImageView(clipboard_img);
-		imgview.setOnMouseClicked(e -> shootPea(e));
+		//System.out.println(clipboard_img.getHeight());
+		if (clipboard_img.getHeight()==81.0) //PEASHOOTER
+		{
+			System.out.println("Im Peashooter");
+			imgview.setOnMouseClicked(this::shootPea);
+		}
+		else if (clipboard_img.getHeight()==85.0) //SUNFLOWER
+		{
+			System.out.println("Im Sunflower");
+		}
+		else if (clipboard_img.getHeight()==110.0) //THREEPEATER
+		{
+			System.out.println("Im Threepeater");
+		}
+		else if (clipboard_img.getHeight()==97.0) //CHERRYBOMB
+		{
+			System.out.println("Im Cherrybomb");
+		}
+		else if (clipboard_img.getHeight()==66.0) //LANDMINE
+		{
+			System.out.println("Im Landmine");
+		}
 		Node node= event.getPickResult().getIntersectedNode();
 		Integer index_x=GridPane.getColumnIndex(node);
 		Integer index_y=GridPane.getRowIndex(node);
@@ -120,9 +135,7 @@ public class gamePreviewController {
 		transition.setNode(zombie1);
 		transition.setToX(-950);
 		transition.play();
-		transition.setOnFinished((e)->{
-			zombie1.setVisible(false);
-		});
+		transition.setOnFinished((e)-> zombie1.setVisible(false));
     }
     public void moveLawnMower(MouseEvent event)
     {
@@ -134,45 +147,36 @@ public class gamePreviewController {
 			transition.setNode(lawnmower1);
 			transition.setToX(+750);
 			transition.play();
-			transition.setOnFinished((e)->{
-				lawnmower1.setVisible(false);
-			});
+			transition.setOnFinished((e)->
+				lawnmower1.setVisible(false));
 		}
 		if (event.getSource()==lawnmower2)
 		{
 			transition.setNode(lawnmower2);
 			transition.setToX(+750);
 			transition.play();
-			transition.setOnFinished((e)->{
-				lawnmower2.setVisible(false);
-			});
+			transition.setOnFinished((e)-> lawnmower2.setVisible(false));
 		}
 		if (event.getSource()==lawnmower3)
 		{
 			transition.setNode(lawnmower3);
 			transition.setToX(+750);
 			transition.play();
-			transition.setOnFinished((e)->{
-				lawnmower3.setVisible(false);
-			});
+			transition.setOnFinished((e)-> lawnmower3.setVisible(false));
 		}
 		if (event.getSource()==lawnmower4)
 		{
 			transition.setNode(lawnmower4);
 			transition.setToX(+750);
 			transition.play();
-			transition.setOnFinished((e)->{
-				lawnmower4.setVisible(false);
-			});
+			transition.setOnFinished((e)-> lawnmower4.setVisible(false));
 		}
 		if (event.getSource()==lawnmower5)
 		{
 			transition.setNode(lawnmower5);
 			transition.setToX(+750);
 			transition.play();
-			transition.setOnFinished((e)->{
-				lawnmower5.setVisible(false);
-			});
+			transition.setOnFinished((e)-> lawnmower5.setVisible(false));
 		}
     }
     public void shootPea(MouseEvent event)
@@ -190,7 +194,12 @@ public class gamePreviewController {
 		transition.setToX(+700);
 		transition.play();
 		transition.setOnFinished((e)->{
+			System.out.println(index_x);
 			pea.setVisible(false);
 		});
+	}
+	public void collectSun(MouseEvent event)
+	{
+
 	}
 }

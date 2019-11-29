@@ -7,7 +7,7 @@ public class Zombie {
     private int health;
     private int speed;
     private boolean isAlive;
-    private Tile myTile;
+ //   private Tile myTile;
     public void Attack(Plant plant)
     {}
     public void move()
@@ -38,9 +38,9 @@ public class Zombie {
         isAlive = alive;
     }
 
-    public void setMyTile(Tile myTile) {
-        this.myTile = myTile;
-    }
+//    public void setMyTile(Tile myTile) {
+//        this.myTile = myTile;
+//    }
 
     public int getPos_x() {
         return pos_x;
@@ -66,9 +66,9 @@ public class Zombie {
         return isAlive;
     }
 
-    public Tile getMyTile() {
-        return myTile;
-    }
+//    public Tile getMyTile() {
+//        return myTile;
+//    }
 
 
 }
