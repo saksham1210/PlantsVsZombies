@@ -1,6 +1,9 @@
 package Main;
 
+import javafx.animation.Animation;
+import javafx.animation.AnimationTimer;
 import javafx.animation.TranslateTransition;
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -99,12 +102,6 @@ public class gamePreviewController {
 		Image clipboard_img= (Image) event.getDragboard().getContent(DataFormat.IMAGE);
 		Node node= event.getPickResult().getIntersectedNode();
 		ImageView img_v=(ImageView) node;
-		if (img_v.getImage()==null)
-		{
-			img_v.setImage(clipboard_img);
-		}
-		Integer index_x=GridPane.getColumnIndex(node);
-		Integer index_y=GridPane.getRowIndex(node);
 		if (clipboard_img.getHeight()==81.0) //PEASHOOTER
 		{
 			System.out.println("Im Peashooter");
@@ -126,9 +123,16 @@ public class gamePreviewController {
 		{
 			System.out.println("Im Landmine");
 		}
+		if (img_v.getImage()==null)
+		{
+			img_v.setImage(clipboard_img);
+		}
+		Integer index_x=GridPane.getColumnIndex(node);
+		Integer index_y=GridPane.getRowIndex(node);
 		System.out.print(index_x + " ");
 		System.out.println(index_y) ;
 		gridPane_.add(img_v,index_x,index_y);
+
 	}
 	public void handleDragDone() {	}
 	public void moveZombie()
@@ -184,22 +188,26 @@ public class gamePreviewController {
     }
     public void shootPea(MouseEvent event)
 	{
-		pea=new ImageView();
+		pea = new ImageView();
+		ChangeListener<Number> checkIntersection = (ob, n, n1)->{
+			if (pea.getBoundsInParent().intersects(zombie1.getBoundsInParent())){
+				System.out.println("Intersection detected");
+				pea.setVisible(false);
+			}
+		};
+		pea.translateXProperty().addListener(checkIntersection);
 		pea.setImage(new Image(".\\Main\\PvZpics\\Pea_1.png"));
 		Node node= event.getPickResult().getIntersectedNode();
 		Integer index_x=GridPane.getColumnIndex(node);
 		Integer index_y=GridPane.getRowIndex(node);
 		gridPane_.add(pea,index_x,index_y);
 		TranslateTransition transition = new TranslateTransition();
-		transition.setDuration(Duration.seconds(2));
+		transition.setDuration(Duration.seconds(3));
 		transition.setNode(pea);
 		pea.setVisible(true);
 		transition.setToX(+700);
+		transition.setCycleCount(1);
 		transition.play();
-		transition.setOnFinished((e)->{
-			System.out.println(index_x);
-			pea.setVisible(false);
-		});
 	}
 	public void collectSun(MouseEvent event)
 	{
