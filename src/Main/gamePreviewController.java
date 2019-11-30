@@ -45,7 +45,6 @@ public class gamePreviewController {
 	public ArrayList<ImageView> Peas;
 	public ArrayList<ImageView> Sunflowers;
 	public double lastNanoTime;
-	public double lastNanoTime1;
 	public ArrayList<Boolean> zombie_in_row;
 	public static Game game;
 
@@ -64,7 +63,6 @@ public class gamePreviewController {
 		Peas=new ArrayList<ImageView>();
 		zombie_hash=new HashMap<ImageView, Zombie>();
 		lastNanoTime=System.nanoTime();
-		lastNanoTime1=System.nanoTime();
 	}
 	@FXML
 	public void initialize()
@@ -73,7 +71,6 @@ public class gamePreviewController {
 		AnimationTimer timer = new AnimationTimer() {
 			@Override
 			public void handle(long now) {
-
 				double time = (now - lastNanoTime)/1000000000;
 				if (Zombies.size()<=7) {
 					if(time >= 5.0)
@@ -85,7 +82,7 @@ public class gamePreviewController {
 						lastNanoTime = now;
 					}
 				}
-				if (time>=10){
+				if (time>=14){
 					spawn_Sun();
 					lastNanoTime = now;
 				}
@@ -112,7 +109,6 @@ public class gamePreviewController {
 		{
 			Dragboard db= peashooter.startDragAndDrop(TransferMode.ANY);
 			img = new Image(".\\Main\\PvZpics\\plant_peashooter_thumb.png");
-			sunTockens.setText(Integer.toString(Integer.parseInt(sunTockens.getText())-100));
 			ClipboardContent cb =new ClipboardContent();
 			cb.putImage(img);
 			db.setContent(cb);
@@ -121,7 +117,6 @@ public class gamePreviewController {
 		{
 			Dragboard db= sunflower.startDragAndDrop(TransferMode.ANY);
 			img = new Image(".\\Main\\PvZpics\\Sunflower2009HD.png");
-			sunTockens.setText(Integer.toString(Integer.parseInt(sunTockens.getText())-50));
 			ClipboardContent cb =new ClipboardContent();
 			cb.putImage(img);
 			db.setContent(cb);
@@ -130,7 +125,6 @@ public class gamePreviewController {
 		{
 			Dragboard db= landmine.startDragAndDrop(TransferMode.ANY);
 			img = new Image(".\\Main\\PvZpics\\PotatoMineHD.png");
-			sunTockens.setText(Integer.toString(Integer.parseInt(sunTockens.getText())-25));
 			ClipboardContent cb =new ClipboardContent();
 			cb.putImage(img);
 			db.setContent(cb);
@@ -139,7 +133,6 @@ public class gamePreviewController {
 		{
 			Dragboard db= threepeater.startDragAndDrop(TransferMode.ANY);
 			img = new Image(".\\Main\\PvZpics\\Threepeater2009HD.png");
-			sunTockens.setText(Integer.toString(Integer.parseInt(sunTockens.getText())-325));
 			ClipboardContent cb =new ClipboardContent();
 			cb.putImage(img);
 			db.setContent(cb);
@@ -148,7 +141,6 @@ public class gamePreviewController {
 		{
 			Dragboard db= cherrybomb.startDragAndDrop(TransferMode.ANY);
 			img = new Image(".\\Main\\PvZpics\\Cherrybomb.png");
-			sunTockens.setText(Integer.toString(Integer.parseInt(sunTockens.getText())-150));
 			ClipboardContent cb =new ClipboardContent();
 			cb.putImage(img);
 			db.setContent(cb);
@@ -180,24 +172,15 @@ public class gamePreviewController {
 		else{img_v=new ImageView(clipboard_img);}
 		Integer index_x=GridPane.getColumnIndex(node);
 		Integer index_y=GridPane.getRowIndex(node);
-		System.out.print(index_x + " ");
-		System.out.println(index_y) ;
+		//System.out.print(index_x + " ");
+		//System.out.println(index_y) ;
 		gridPane_.add(img_v,index_x,index_y);
 
-		AnimationTimer timer = new AnimationTimer() {
-			@Override
-			public void handle(long now) {
-				double time = (now - lastNanoTime1)/1000000000;
-				if (time>=10){
-					ProduceSun(img_v);
-					lastNanoTime1 = now;
-				}
-			}
-		};
 		if (clipboard_img.getHeight()==81.0) //PEASHOOTER
 		{
 			System.out.println("Im Peashooter");
 			this.Plants.add(img_v);
+			sunTockens.setText(Integer.toString(Integer.parseInt(sunTockens.getText())-100));
 			for (ImageView ignored : Plants) {
 //				if (zombie_in_row.get(index_y))
 //				{
@@ -209,31 +192,47 @@ public class gamePreviewController {
 		{
 			System.out.println("Im Sunflower");
 			this.Sunflowers.add(img_v);
-			for (ImageView ignored : Sunflowers)
-			{
-				timer.start();
-			}
+			sunTockens.setText(Integer.toString(Integer.parseInt(sunTockens.getText())-50));
+			start_sun(img_v);
 		}
 		else if (clipboard_img.getHeight()==110.0) //THREEPEATER
 		{
 			System.out.println("Im Threepeater");
+			sunTockens.setText(Integer.toString(Integer.parseInt(sunTockens.getText())-325));
 		}
 		else if (clipboard_img.getHeight()==97.0) //CHERRYBOMB
 		{
 			System.out.println("Im Cherrybomb");
+			sunTockens.setText(Integer.toString(Integer.parseInt(sunTockens.getText())-150));
 		}
 		else if (clipboard_img.getHeight()==66.0) //LANDMINE
 		{
 			System.out.println("Im Landmine");
+			sunTockens.setText(Integer.toString(Integer.parseInt(sunTockens.getText())-25));
 		}
+	}
+
+	public void start_sun(ImageView img_v){
+		AnimationTimer timer = new AnimationTimer() {
+			double last_time= lastNanoTime;
+			@Override
+			public void handle(long now) {
+				double time = (now - last_time)/1000000000;
+				if (time>=10){
+					ProduceSun(img_v);
+					last_time = now;
+				}
+			}
+		}; timer.start();
 	}
 	public void ProduceSun(ImageView sunpro)
 	{
 		ImageView sun=new ImageView(".\\Main\\PvZpics\\Sun_PvZ2.png");
-		sun.setFitWidth(50);
-		sun.setFitHeight(50);
+		sun.setOnMouseClicked((e)->sunCollect(sun));
+		sun.setFitWidth(60);
+		sun.setFitHeight(60);
 		gridPane_.add(sun, GridPane.getColumnIndex(sunpro), GridPane.getRowIndex(sunpro));
-		sunpro.setOnMouseClicked((e)->sunCollect(sunpro));
+
 	}
 
 
@@ -330,9 +329,9 @@ public class gamePreviewController {
 				if (img.getX()<(-750))
 				{
 					img.setVisible(false);
-					moveLawnMower(GridPane.getColumnIndex(img), GridPane.getRowIndex(img));
+					moveLawnMower(img.getX(), GridPane.getRowIndex(img));
 				}
-				//System.out.println(img.getX());
+				//System.out.println(img.getY());
 				img.translateXProperty().setValue(img.getX());
 				img.setX(img.getX() - 0.35);
 			}
@@ -345,83 +344,76 @@ public class gamePreviewController {
 
 	public void moveLawnMower(double col,double row)
 	{
-		AnimationTimer timer = new AnimationTimer() {
-			@Override
-			public void handle(long now) {
-				if (col==1 & row==0 )
-				{
-					System.out.println("hoooooooooooo");
-					lawnmower1.translateXProperty().setValue(lawnmower1.getX());
-					lawnmower1.setX(lawnmower1.getX() + 3);
-//				for (int i=0;i<12;i++)
-//				{
-//					gridPane_.
-//				}
+		ChangeListener<Number> checkIntersection = (ob, n, n1)->{
+			for (ImageView target : Zombies) {
+				if (lawnmower1.getBoundsInParent().intersects(target.getBoundsInParent())) {
+					target.setImage(null);
+					Zombies.remove(target);
 				}
-				if (col==1 & row==1 )
-				{
-					System.out.println("hoooooooooooo");
-					lawnmower2.translateXProperty().setValue(lawnmower2.getX());
-					lawnmower2.setX(lawnmower2.getX() + 3);
+				else if (lawnmower2.getBoundsInParent().intersects(target.getBoundsInParent())) {
+					target.setImage(null);
+					Zombies.remove(target);
 				}
-				if (col==1 & row==2 )
-				{
-					System.out.println("hoooooooooooo");
-					lawnmower3.translateXProperty().setValue(lawnmower3.getX());
-					lawnmower3.setX(lawnmower3.getX() + 3);
+				else if (lawnmower3.getBoundsInParent().intersects(target.getBoundsInParent())) {
+					target.setImage(null);
+					Zombies.remove(target);
 				}
-				if (col==1 & row==3 )
-				{
-					System.out.println("hoooooooooooo");
-					lawnmower4.translateXProperty().setValue(lawnmower4.getX());
-					lawnmower4.setX(lawnmower4.getX() + 3);
+				else if (lawnmower4.getBoundsInParent().intersects(target.getBoundsInParent())) {
+					target.setImage(null);
+					Zombies.remove(target);
 				}
-				if (col==1 & row==4 )
-				{
-					System.out.println("hoooooooooooo");
-					lawnmower5.translateXProperty().setValue(lawnmower5.getX());
-					lawnmower5.setX(lawnmower5.getX() + 3);
+				else if (lawnmower5.getBoundsInParent().intersects(target.getBoundsInParent())) {
+					target.setImage(null);
+					Zombies.remove(target);
 				}
 			}
 		};
-//        TranslateTransition transition = new TranslateTransition();
-//        transition.setDuration(Duration.seconds(3.5));
-//        if (event.getSource()==lawnmower1)
-//		{
-//			transition.setNode(lawnmower1);
-//			transition.setToX(+750);
-//			transition.play();
-//			transition.setOnFinished((e)->
-//				lawnmower1.setVisible(false));
-//		}
-//		if (event.getSource()==lawnmower2)
-//		{
-//			transition.setNode(lawnmower2);
-//			transition.setToX(+750);
-//			transition.play();
-//			transition.setOnFinished((e)-> lawnmower2.setVisible(false));
-//		}
-//		if (event.getSource()==lawnmower3)
-//		{
-//			transition.setNode(lawnmower3);
-//			transition.setToX(+750);
-//			transition.play();
-//			transition.setOnFinished((e)-> lawnmower3.setVisible(false));
-//		}
-//		if (event.getSource()==lawnmower4)
-//		{
-//			transition.setNode(lawnmower4);
-//			transition.setToX(+750);
-//			transition.play();
-//			transition.setOnFinished((e)-> lawnmower4.setVisible(false));
-//		}
-//		if (event.getSource()==lawnmower5)
-//		{
-//			transition.setNode(lawnmower5);
-//			transition.setToX(+750);
-//			transition.play();
-//			transition.setOnFinished((e)-> lawnmower5.setVisible(false));
-//		}
+		AnimationTimer timer = new AnimationTimer() {
+			@Override
+			public void handle(long now) {
+				System.out.println(col+" "+row);
+				if (lawnmower1.getX()>500 | lawnmower2.getX()>500 | lawnmower3.getX()>500 | lawnmower4.getX()>500 | lawnmower5.getX()>500)
+				{
+					stop();
+				}
+				if (col<=(-750) & row==0)
+				{
+					System.out.println("BIG BOOTY HOE 1");
+					lawnmower1.translateXProperty().addListener(checkIntersection);
+					lawnmower1.translateXProperty().setValue(lawnmower1.getX());
+					lawnmower1.setX(lawnmower1.getX() + 0.5);
+				}
+				else if (col<=(-750) & row==1 )
+				{
+					System.out.println("BIG BOOTY HOE 2");
+					lawnmower2.translateXProperty().addListener(checkIntersection);
+					lawnmower2.translateXProperty().setValue(lawnmower2.getX());
+					lawnmower2.setX(lawnmower2.getX() + 0.5);
+				}
+				else if (col<=(-750) & row==2 )
+				{
+					System.out.println("BIG BOOTY HOE 3");
+					lawnmower3.translateXProperty().addListener(checkIntersection);
+					lawnmower3.translateXProperty().setValue(lawnmower3.getX());
+					lawnmower3.setX(lawnmower3.getX() + 0.5);
+				}
+				else if (col<=(-750) & row==3 )
+				{
+					System.out.println("BIG BOOTY HOE 4");
+					lawnmower4.translateXProperty().addListener(checkIntersection);
+					lawnmower4.translateXProperty().setValue(lawnmower4.getX());
+					lawnmower4.setX(lawnmower4.getX() + 0.5);
+				}
+				else if (col<=(-750) & row==4 )
+				{
+					System.out.println("BIG BOOTY HOE 5");
+					lawnmower5.translateXProperty().addListener(checkIntersection);
+					lawnmower5.translateXProperty().setValue(lawnmower5.getX());
+					lawnmower5.setX(lawnmower5.getX() + 0.5);
+				}
+			}
+		};
+		timer.start();
 	}
 
 }
