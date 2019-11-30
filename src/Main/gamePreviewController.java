@@ -15,6 +15,8 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Random;
 
 public class gamePreviewController {
@@ -32,30 +34,53 @@ public class gamePreviewController {
 	public GridPane gridPane_;
 	public Image img;
 	public ArrayList<ImageView> Zombies;
+	public ArrayList<Zombie> zombie_list;
+	public ArrayList<Plant> plant_list;
+	public HashMap<ImageView,Zombie> zombie_hash;
+	public HashMap<ImageView,Plant> plant_hash;
 	public ArrayList<ImageView> Plants;
 	public ArrayList<ImageView> Suns;
+	public ArrayList<ImageView> Peas;
 	public double lastNanoTime;
+	public ArrayList<Boolean> zombie_in_row;
+
 	public gamePreviewController()
 	{
+		zombie_in_row=new ArrayList<Boolean>();
+		for (int i=0;i<5;i++)
+		{
+			zombie_in_row.add(false);
+		}
 		Plants=new ArrayList<ImageView>();
 		Zombies=new ArrayList<ImageView>();
+		zombie_list=new ArrayList<Zombie>();
+		Suns=new ArrayList<ImageView>();
+		Peas=new ArrayList<ImageView>();
+		zombie_hash=new HashMap<ImageView, Zombie>();
 		lastNanoTime=System.nanoTime();
 	}
 	@FXML
 	public void initialize()
 	{
+		final int[] counter = {0};
 		AnimationTimer timer = new AnimationTimer() {
 			@Override
 			public void handle(long now) {
+
 				double time = (now - lastNanoTime)/1000000000;
-				if(time >= 5.0) {
-					if (Zombies.size()==7)
+				if (Zombies.size()<=7) {
+					if(time >= 5.0)
 					{
-						stop();
+						counter[0]++;
+						spawn_Zombie();
+						if (counter[0] %2 ==0)
+							spawn_Sun();
+						lastNanoTime = now;
 					}
-					lastNanoTime = now;
-					spawn_Zombie();
+				}
+				if (time>=10){
 					spawn_Sun();
+					lastNanoTime = now;
 				}
 			}
 		};
@@ -128,6 +153,7 @@ public class gamePreviewController {
 
 	public void handleDragDropped(DragEvent event)
 	{
+
 		Image clipboard_img= (Image) event.getDragboard().getContent(DataFormat.IMAGE);
 		Node node= event.getPickResult().getIntersectedNode();
 		ImageView img_v=new ImageView(clipboard_img);
@@ -135,6 +161,35 @@ public class gamePreviewController {
 		Integer index_y=GridPane.getRowIndex(node);
 		System.out.print(index_x + " ");
 		System.out.println(index_y) ;
+//
+//		for (ImageView zombie : Zombies)
+//		{
+//			ChangeListener<Number> checkIntersection = (ob, n, n1)->{
+//				if (img_v.getBoundsInParent().intersects(zombie.getBoundsInParent())){
+//					System.out.println("Intersection detected Zombie");
+//
+//				}
+//			};
+//		}
+
+
+//		AnimationTimer timer = new AnimationTimer() {
+//			@Override
+//			public void handle(long now) {
+//				if () {
+//					gridPane_.getChildren().remove(pea);
+////					pea.setImage(null);
+//					pea.setX(img.getX());
+//				}
+//				if (clipboard_img.getHeight()==81.0) //PEASHOOTER
+//				{
+//					if (zombie_in_row.get(index_y))
+//					{
+//						shootPea(img_v);
+//					}
+//				}
+//			}
+//		};
 		gridPane_.add(img_v,index_x,index_y);
 		if (clipboard_img.getHeight()==81.0) //PEASHOOTER
 		{
@@ -143,6 +198,7 @@ public class gamePreviewController {
 			for (ImageView ignored : Plants) {
 				shootPea(img_v);
 			}
+
 		}
 		else if (clipboard_img.getHeight()==85.0) //SUNFLOWER
 		{
@@ -162,11 +218,56 @@ public class gamePreviewController {
 		}
 
 	}
+
+
+	public void shootPea(ImageView img)
+	{
+		ImageView pea= new ImageView(".\\Main\\PvZpics\\Pea_1.png");
+		Peas.add(pea);
+		ChangeListener<Number> checkIntersection = (ob, n, n1)->{
+			for (ImageView target : Zombies) {
+				if (pea.getBoundsInParent().intersects(target.getBoundsInParent())) {
+					//gridPane_.getChildren().remove(pea);
+					Zombie temp = zombie_hash.get(target);
+					temp.getAttacked();
+					if (!temp.isAlive()) {gridPane_.getChildren().remove(target); }
+					System.out.println("Intersection detected");
+					pea.setX(img.getX());
+				}
+			}
+		};
+		Integer index_x=GridPane.getColumnIndex(img);
+		Integer index_y=GridPane.getRowIndex(img);
+		gridPane_.add(pea,index_x,index_y);
+		AnimationTimer timer = new AnimationTimer() {
+			@Override
+			public void handle(long now) {
+
+				if (pea.getX()>700)
+				{
+					//gridPane_.getChildren().remove(pea);
+//					pea.setImage(null);
+					pea.setX(img.getX());
+				}
+				pea.translateXProperty().addListener(checkIntersection);
+				pea.translateXProperty().setValue(pea.getX());
+				pea.setX(pea.getX() + 2);
+				//System.out.println(pea.getX());
+			}
+		};
+		timer.start();
+	}
+
+
 	public void spawn_Zombie()
 	{
 		ImageView zombie=new ImageView(new Image(".\\Main\\PvZpics\\Conehead_Zombie.gif"));
+		Zombie zom=new Zombie(zombie);
+		zombie_list.add(zom);
+		zombie_hash.put(zombie,zom);
 		Random random=new Random();
 		int index_y=random.nextInt(5);
+		zombie_in_row.set(index_y,true);
 		gridPane_.add(zombie,9,index_y);
 		zombie.setVisible(true);
 		Zombies.add(zombie);
@@ -176,10 +277,16 @@ public class gamePreviewController {
 	{
 		ImageView sun=new ImageView(new Image(".\\Main\\PvZpics\\Sun_PvZ2.png"));
 		Random random=new Random();
-		int index_x=random.nextInt(5);
+		int index_x=random.nextInt(8);
+		index_x+=1;
+		//sun.setX(300+(30*index_x));
 		gridPane_.add(sun,index_x,0);
 		Suns.add(sun);
 		moveSun(sun);
+	}
+
+	public void sunCollect () {
+		Game.collectSun();
 	}
 	public void moveSun(ImageView img)
 	{
@@ -191,24 +298,25 @@ public class gamePreviewController {
 //		};
 		img.setVisible(true);
 		//img.translateXProperty().addListener(checkIntersection);
-		AnimationTimer timer = new AnimationTimer() {
-			@Override
-			public void handle(long now) {
-				if (img.getY()<(-750))
-				{
-					img.setVisible(false);
-				}
-				System.out.println(img.getY());
-				img.translateYProperty().setValue(img.getY());
-				img.setX(img.getY() - 0.15);
-			}
-		};
-		timer.start();
-//		TranslateTransition transition = new TranslateTransition();
-//		transition.setDuration(Duration.seconds(50));
-//		transition.setNode(img);
-//		transition.setToX(-950);
-//		transition.play();
+//		AnimationTimer timer = new AnimationTimer() {
+//			@Override
+//			public void handle(long now) {
+//				if (img.getY()<(-750))
+//				{
+//					img.setVisible(false);
+//				}
+//				//System.out.println(img.getY());
+//				img.translateYProperty().setValue(img.getY());
+//				img.setX(img.getY() + 0.15);
+//			}
+//		};
+//		timer.start();
+		TranslateTransition transition = new TranslateTransition();
+		transition.setDuration(Duration.seconds(15));
+		sunflower.setOnMouseClicked((e)->sunCollect());
+		transition.setNode(img);
+		transition.setToY(500);
+		transition.play();
 	}
 
 	public void moveZombie(ImageView img)
@@ -227,8 +335,9 @@ public class gamePreviewController {
 				if (img.getX()<(-750))
 				{
 					img.setVisible(false);
+					moveLawnMower(GridPane.getColumnIndex(img), GridPane.getRowIndex(img));
 				}
-				System.out.println(img.getX());
+				//System.out.println(img.getX());
 				img.translateXProperty().setValue(img.getX());
 				img.setX(img.getX() - 0.35);
 			}
@@ -240,89 +349,99 @@ public class gamePreviewController {
 //		transition.setToX(-950);
 //		transition.play();
     }
-    public void moveLawnMower(MouseEvent event)
-    {
-        TranslateTransition transition = new TranslateTransition();
-        transition.setDuration(Duration.seconds(3.5));
-        if (event.getSource()==lawnmower1)
-		{
-			transition.setNode(lawnmower1);
-			transition.setToX(+750);
-			transition.play();
-			transition.setOnFinished((e)->
-				lawnmower1.setVisible(false));
-		}
-		if (event.getSource()==lawnmower2)
-		{
-			transition.setNode(lawnmower2);
-			transition.setToX(+750);
-			transition.play();
-			transition.setOnFinished((e)-> lawnmower2.setVisible(false));
-		}
-		if (event.getSource()==lawnmower3)
-		{
-			transition.setNode(lawnmower3);
-			transition.setToX(+750);
-			transition.play();
-			transition.setOnFinished((e)-> lawnmower3.setVisible(false));
-		}
-		if (event.getSource()==lawnmower4)
-		{
-			transition.setNode(lawnmower4);
-			transition.setToX(+750);
-			transition.play();
-			transition.setOnFinished((e)-> lawnmower4.setVisible(false));
-		}
-		if (event.getSource()==lawnmower5)
-		{
-			transition.setNode(lawnmower5);
-			transition.setToX(+750);
-			transition.play();
-			transition.setOnFinished((e)-> lawnmower5.setVisible(false));
-		}
-    }
-    public void shootPea(ImageView img)
+
+
+
+
+	public void moveLawnMower(double col,double row)
 	{
-		ImageView pea= new ImageView(".\\Main\\PvZpics\\Pea_1.png");
-		System.out.println("Trying to shoot");
-//		pea = new ImageView();
-		ChangeListener<Number> checkIntersection = (ob, n, n1)->{
-			for (ImageView target : Zombies) {
-				//if (target.getX()-pea.getX()==0){
-				if (pea.getBoundsInParent().intersects(target.getBoundsInParent())) {
-					System.out.println("Intersection detected");
-					pea.setX(img.getX());
-				}
-			}
-		};
-
-		Integer index_x=GridPane.getColumnIndex(img);
-		Integer index_y=GridPane.getRowIndex(img);
-		gridPane_.add(pea,index_x,index_y);
-
 		AnimationTimer timer = new AnimationTimer() {
 			@Override
 			public void handle(long now) {
 
-				if (pea.getX()>700)
+//				if (pea.getX()>700)
+//				{
+//					//pea=null;
+//					pea.setX(img.getX());
+//				}
+//				pea.translateXProperty().addListener(checkIntersection);
+//				pea.translateXProperty().setValue(pea.getX());
+//				pea.setX(pea.getX() + 1.5);
+//				System.out.println(pea.getX());
+				if (col==1 & row==0 )
 				{
-					pea.setX(img.getX());
+					System.out.println("hoooooooooooo");
+					lawnmower1.translateXProperty().setValue(lawnmower1.getX());
+					lawnmower1.setX(lawnmower1.getX() + 3);
+//				for (int i=0;i<12;i++)
+//				{
+//					gridPane_.
+//				}
 				}
-				pea.translateXProperty().addListener(checkIntersection);
-				pea.translateXProperty().setValue(pea.getX());
-				pea.setX(pea.getX() + 1.5);
-				System.out.println(pea.getX());
+				if (col==1 & row==1 )
+				{
+					System.out.println("hoooooooooooo");
+					lawnmower2.translateXProperty().setValue(lawnmower2.getX());
+					lawnmower2.setX(lawnmower2.getX() + 3);
+				}
+				if (col==1 & row==2 )
+				{
+					System.out.println("hoooooooooooo");
+					lawnmower3.translateXProperty().setValue(lawnmower3.getX());
+					lawnmower3.setX(lawnmower3.getX() + 3);
+				}
+				if (col==1 & row==3 )
+				{
+					System.out.println("hoooooooooooo");
+					lawnmower4.translateXProperty().setValue(lawnmower4.getX());
+					lawnmower4.setX(lawnmower4.getX() + 3);
+				}
+				if (col==1 & row==4 )
+				{
+					System.out.println("hoooooooooooo");
+					lawnmower5.translateXProperty().setValue(lawnmower5.getX());
+					lawnmower5.setX(lawnmower5.getX() + 3);
+				}
 			}
 		};
-		timer.start();
-//		TranslateTransition transition = new TranslateTransition();
-//		transition.setDuration(Duration.seconds(3));
-//		transition.setNode(pea);
-//		pea.setVisible(true);
-//		transition.setToX(+700);
-//		transition.setCycleCount(-1);
-//		transition.play();
-//		transition.setOnFinished((e)-> pea.setVisible(false));
+//        TranslateTransition transition = new TranslateTransition();
+//        transition.setDuration(Duration.seconds(3.5));
+//        if (event.getSource()==lawnmower1)
+//		{
+//			transition.setNode(lawnmower1);
+//			transition.setToX(+750);
+//			transition.play();
+//			transition.setOnFinished((e)->
+//				lawnmower1.setVisible(false));
+//		}
+//		if (event.getSource()==lawnmower2)
+//		{
+//			transition.setNode(lawnmower2);
+//			transition.setToX(+750);
+//			transition.play();
+//			transition.setOnFinished((e)-> lawnmower2.setVisible(false));
+//		}
+//		if (event.getSource()==lawnmower3)
+//		{
+//			transition.setNode(lawnmower3);
+//			transition.setToX(+750);
+//			transition.play();
+//			transition.setOnFinished((e)-> lawnmower3.setVisible(false));
+//		}
+//		if (event.getSource()==lawnmower4)
+//		{
+//			transition.setNode(lawnmower4);
+//			transition.setToX(+750);
+//			transition.play();
+//			transition.setOnFinished((e)-> lawnmower4.setVisible(false));
+//		}
+//		if (event.getSource()==lawnmower5)
+//		{
+//			transition.setNode(lawnmower5);
+//			transition.setToX(+750);
+//			transition.play();
+//			transition.setOnFinished((e)-> lawnmower5.setVisible(false));
+//		}
 	}
 
 }
