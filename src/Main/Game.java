@@ -13,6 +13,10 @@ package Main;
             myUser = user;
         }
 
+        public Game () {
+
+        }
+
         public static void collectSun() {
             sunTockens = sunTockens + 25;
         }

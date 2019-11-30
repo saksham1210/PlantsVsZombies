@@ -8,6 +8,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
@@ -31,6 +32,7 @@ public class gamePreviewController {
 	public ImageView lawnmower3;
 	public ImageView lawnmower4;
 	public ImageView lawnmower5;
+	public Label sunTockens;
 	public GridPane gridPane_;
 	public Image img;
 	public ArrayList<ImageView> Zombies;
@@ -43,6 +45,7 @@ public class gamePreviewController {
 	public ArrayList<ImageView> Peas;
 	public double lastNanoTime;
 	public ArrayList<Boolean> zombie_in_row;
+	public static Game game;
 
 	public gamePreviewController()
 	{
@@ -161,42 +164,16 @@ public class gamePreviewController {
 		Integer index_y=GridPane.getRowIndex(node);
 		System.out.print(index_x + " ");
 		System.out.println(index_y) ;
-//
-//		for (ImageView zombie : Zombies)
-//		{
-//			ChangeListener<Number> checkIntersection = (ob, n, n1)->{
-//				if (img_v.getBoundsInParent().intersects(zombie.getBoundsInParent())){
-//					System.out.println("Intersection detected Zombie");
-//
-//				}
-//			};
-//		}
-
-
-//		AnimationTimer timer = new AnimationTimer() {
-//			@Override
-//			public void handle(long now) {
-//				if () {
-//					gridPane_.getChildren().remove(pea);
-////					pea.setImage(null);
-//					pea.setX(img.getX());
-//				}
-//				if (clipboard_img.getHeight()==81.0) //PEASHOOTER
-//				{
-//					if (zombie_in_row.get(index_y))
-//					{
-//						shootPea(img_v);
-//					}
-//				}
-//			}
-//		};
 		gridPane_.add(img_v,index_x,index_y);
 		if (clipboard_img.getHeight()==81.0) //PEASHOOTER
 		{
 			System.out.println("Im Peashooter");
 			this.Plants.add(img_v);
 			for (ImageView ignored : Plants) {
-				shootPea(img_v);
+//				if (zombie_in_row.get(index_y))
+//				{
+					shootPea(img_v);
+//				}
 			}
 
 		}
@@ -222,15 +199,19 @@ public class gamePreviewController {
 
 	public void shootPea(ImageView img)
 	{
+		ImageView toremove;
 		ImageView pea= new ImageView(".\\Main\\PvZpics\\Pea_1.png");
 		Peas.add(pea);
 		ChangeListener<Number> checkIntersection = (ob, n, n1)->{
 			for (ImageView target : Zombies) {
 				if (pea.getBoundsInParent().intersects(target.getBoundsInParent())) {
-					//gridPane_.getChildren().remove(pea);
 					Zombie temp = zombie_hash.get(target);
 					temp.getAttacked();
-					if (!temp.isAlive()) {gridPane_.getChildren().remove(target); }
+					if (!temp.isAlive()) {
+						gridPane_.getChildren().remove(target);
+						target.setImage(null);
+						Zombies.remove(target);
+					}
 					System.out.println("Intersection detected");
 					pea.setX(img.getX());
 				}
@@ -279,41 +260,27 @@ public class gamePreviewController {
 		Random random=new Random();
 		int index_x=random.nextInt(8);
 		index_x+=1;
-		//sun.setX(300+(30*index_x));
 		gridPane_.add(sun,index_x,0);
 		Suns.add(sun);
 		moveSun(sun);
 	}
 
-	public void sunCollect () {
+	public void sunCollect (ImageView sun) {
 		Game.collectSun();
+		sun.setVisible(false);
+		int val = Integer.parseInt(sunTockens.getText());
+		val = val + 25;
+		sunTockens.setText((Integer.toString(val)));
+		System.out.println("added");
 	}
 	public void moveSun(ImageView img)
 	{
-//		ChangeListener<Number> checkIntersection = (ob, n, n1)->{
-//				if (img.getBoundsInParent().intersects(pea.getBoundsInParent())){
-//					System.out.println("Intersection detected Zombie");
-//					//transition.stop();
-//				}
-//		};
+
 		img.setVisible(true);
-		//img.translateXProperty().addListener(checkIntersection);
-//		AnimationTimer timer = new AnimationTimer() {
-//			@Override
-//			public void handle(long now) {
-//				if (img.getY()<(-750))
-//				{
-//					img.setVisible(false);
-//				}
-//				//System.out.println(img.getY());
-//				img.translateYProperty().setValue(img.getY());
-//				img.setX(img.getY() + 0.15);
-//			}
-//		};
-//		timer.start();
+
 		TranslateTransition transition = new TranslateTransition();
 		transition.setDuration(Duration.seconds(15));
-		sunflower.setOnMouseClicked((e)->sunCollect());
+		img.setOnMouseClicked((e)->sunCollect(img));
 		transition.setNode(img);
 		transition.setToY(500);
 		transition.play();
@@ -321,14 +288,7 @@ public class gamePreviewController {
 
 	public void moveZombie(ImageView img)
     {
-//		ChangeListener<Number> checkIntersection = (ob, n, n1)->{
-//				if (img.getBoundsInParent().intersects(pea.getBoundsInParent())){
-//					System.out.println("Intersection detected Zombie");
-//					//transition.stop();
-//				}
-//		};
 		img.setVisible(true);
-    	//img.translateXProperty().addListener(checkIntersection);
 		AnimationTimer timer = new AnimationTimer() {
 			@Override
 			public void handle(long now) {
@@ -343,11 +303,6 @@ public class gamePreviewController {
 			}
 		};
 		timer.start();
-//		TranslateTransition transition = new TranslateTransition();
-//		transition.setDuration(Duration.seconds(50));
-//		transition.setNode(img);
-//		transition.setToX(-950);
-//		transition.play();
     }
 
 
@@ -358,16 +313,6 @@ public class gamePreviewController {
 		AnimationTimer timer = new AnimationTimer() {
 			@Override
 			public void handle(long now) {
-
-//				if (pea.getX()>700)
-//				{
-//					//pea=null;
-//					pea.setX(img.getX());
-//				}
-//				pea.translateXProperty().addListener(checkIntersection);
-//				pea.translateXProperty().setValue(pea.getX());
-//				pea.setX(pea.getX() + 1.5);
-//				System.out.println(pea.getX());
 				if (col==1 & row==0 )
 				{
 					System.out.println("hoooooooooooo");
