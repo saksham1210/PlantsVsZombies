@@ -43,7 +43,9 @@ public class gamePreviewController {
 	public ArrayList<ImageView> Plants;
 	public ArrayList<ImageView> Suns;
 	public ArrayList<ImageView> Peas;
+	public ArrayList<ImageView> Sunflowers;
 	public double lastNanoTime;
+	public double lastNanoTime1;
 	public ArrayList<Boolean> zombie_in_row;
 	public static Game game;
 
@@ -56,11 +58,13 @@ public class gamePreviewController {
 		}
 		Plants=new ArrayList<ImageView>();
 		Zombies=new ArrayList<ImageView>();
+		Sunflowers=new ArrayList<ImageView>();
 		zombie_list=new ArrayList<Zombie>();
 		Suns=new ArrayList<ImageView>();
 		Peas=new ArrayList<ImageView>();
 		zombie_hash=new HashMap<ImageView, Zombie>();
 		lastNanoTime=System.nanoTime();
+		lastNanoTime1=System.nanoTime();
 	}
 	@FXML
 	public void initialize()
@@ -104,42 +108,47 @@ public class gamePreviewController {
 	}
 	public void handleDragDetect(MouseEvent event)
 	{
-		if (event.getSource()==peashooter)
+		if (event.getSource()==peashooter & Integer.parseInt(sunTockens.getText())>=100)
 		{
 			Dragboard db= peashooter.startDragAndDrop(TransferMode.ANY);
 			img = new Image(".\\Main\\PvZpics\\plant_peashooter_thumb.png");
+			sunTockens.setText(Integer.toString(Integer.parseInt(sunTockens.getText())-100));
 			ClipboardContent cb =new ClipboardContent();
 			cb.putImage(img);
 			db.setContent(cb);
 		}
-		if (event.getSource()==sunflower)
+		if (event.getSource()==sunflower & Integer.parseInt(sunTockens.getText())>=50)
 		{
 			Dragboard db= sunflower.startDragAndDrop(TransferMode.ANY);
 			img = new Image(".\\Main\\PvZpics\\Sunflower2009HD.png");
+			sunTockens.setText(Integer.toString(Integer.parseInt(sunTockens.getText())-50));
 			ClipboardContent cb =new ClipboardContent();
 			cb.putImage(img);
 			db.setContent(cb);
 		}
-		if (event.getSource()==landmine)
+		if (event.getSource()==landmine & Integer.parseInt(sunTockens.getText())>=25)
 		{
 			Dragboard db= landmine.startDragAndDrop(TransferMode.ANY);
 			img = new Image(".\\Main\\PvZpics\\PotatoMineHD.png");
+			sunTockens.setText(Integer.toString(Integer.parseInt(sunTockens.getText())-25));
 			ClipboardContent cb =new ClipboardContent();
 			cb.putImage(img);
 			db.setContent(cb);
 		}
-		if (event.getSource()==threepeater)
+		if (event.getSource()==threepeater & Integer.parseInt(sunTockens.getText())>=325)
 		{
 			Dragboard db= threepeater.startDragAndDrop(TransferMode.ANY);
 			img = new Image(".\\Main\\PvZpics\\Threepeater2009HD.png");
+			sunTockens.setText(Integer.toString(Integer.parseInt(sunTockens.getText())-325));
 			ClipboardContent cb =new ClipboardContent();
 			cb.putImage(img);
 			db.setContent(cb);
 		}
-		if (event.getSource()==cherrybomb)
+		if (event.getSource()==cherrybomb & Integer.parseInt(sunTockens.getText())>=150)
 		{
 			Dragboard db= cherrybomb.startDragAndDrop(TransferMode.ANY);
 			img = new Image(".\\Main\\PvZpics\\Cherrybomb.png");
+			sunTockens.setText(Integer.toString(Integer.parseInt(sunTockens.getText())-150));
 			ClipboardContent cb =new ClipboardContent();
 			cb.putImage(img);
 			db.setContent(cb);
@@ -153,18 +162,38 @@ public class gamePreviewController {
 			event.acceptTransferModes(TransferMode.ANY);
 		}
 	}
+//	public boolean checkRow()
+//	{
+//		for
+//	}
+
 
 	public void handleDragDropped(DragEvent event)
 	{
-
 		Image clipboard_img= (Image) event.getDragboard().getContent(DataFormat.IMAGE);
 		Node node= event.getPickResult().getIntersectedNode();
-		ImageView img_v=new ImageView(clipboard_img);
+		ImageView img_v;
+		if (clipboard_img.getHeight()==81.0) //PEASHOOTER
+		{img_v=new ImageView(".\\Main\\PvZpics\\Peashooter_transparent_gif.gif");}
+		else if (clipboard_img.getHeight()==85.0) //SUNFLOWER
+		{img_v=new ImageView(".\\Main\\PvZpics\\5dbd90c75276b768463076.gif");}
+		else{img_v=new ImageView(clipboard_img);}
 		Integer index_x=GridPane.getColumnIndex(node);
 		Integer index_y=GridPane.getRowIndex(node);
 		System.out.print(index_x + " ");
 		System.out.println(index_y) ;
 		gridPane_.add(img_v,index_x,index_y);
+
+		AnimationTimer timer = new AnimationTimer() {
+			@Override
+			public void handle(long now) {
+				double time = (now - lastNanoTime1)/1000000000;
+				if (time>=10){
+					ProduceSun(img_v);
+					lastNanoTime1 = now;
+				}
+			}
+		};
 		if (clipboard_img.getHeight()==81.0) //PEASHOOTER
 		{
 			System.out.println("Im Peashooter");
@@ -172,14 +201,18 @@ public class gamePreviewController {
 			for (ImageView ignored : Plants) {
 //				if (zombie_in_row.get(index_y))
 //				{
-					shootPea(img_v);
+					shootPea(ignored);
 //				}
 			}
-
 		}
 		else if (clipboard_img.getHeight()==85.0) //SUNFLOWER
 		{
 			System.out.println("Im Sunflower");
+			this.Sunflowers.add(img_v);
+			for (ImageView ignored : Sunflowers)
+			{
+				timer.start();
+			}
 		}
 		else if (clipboard_img.getHeight()==110.0) //THREEPEATER
 		{
@@ -193,13 +226,19 @@ public class gamePreviewController {
 		{
 			System.out.println("Im Landmine");
 		}
-
+	}
+	public void ProduceSun(ImageView sunpro)
+	{
+		ImageView sun=new ImageView(".\\Main\\PvZpics\\Sun_PvZ2.png");
+		sun.setFitWidth(50);
+		sun.setFitHeight(50);
+		gridPane_.add(sun, GridPane.getColumnIndex(sunpro), GridPane.getRowIndex(sunpro));
+		sunpro.setOnMouseClicked((e)->sunCollect(sunpro));
 	}
 
 
 	public void shootPea(ImageView img)
 	{
-		ImageView toremove;
 		ImageView pea= new ImageView(".\\Main\\PvZpics\\Pea_1.png");
 		Peas.add(pea);
 		ChangeListener<Number> checkIntersection = (ob, n, n1)->{
@@ -211,6 +250,7 @@ public class gamePreviewController {
 						gridPane_.getChildren().remove(target);
 						target.setImage(null);
 						Zombies.remove(target);
+						System.gc();
 					}
 					System.out.println("Intersection detected");
 					pea.setX(img.getX());
@@ -226,14 +266,11 @@ public class gamePreviewController {
 
 				if (pea.getX()>700)
 				{
-					//gridPane_.getChildren().remove(pea);
-//					pea.setImage(null);
 					pea.setX(img.getX());
 				}
 				pea.translateXProperty().addListener(checkIntersection);
 				pea.translateXProperty().setValue(pea.getX());
 				pea.setX(pea.getX() + 2);
-				//System.out.println(pea.getX());
 			}
 		};
 		timer.start();
@@ -275,14 +312,12 @@ public class gamePreviewController {
 	}
 	public void moveSun(ImageView img)
 	{
-
 		img.setVisible(true);
-
 		TranslateTransition transition = new TranslateTransition();
-		transition.setDuration(Duration.seconds(15));
+		transition.setDuration(Duration.seconds(12));
 		img.setOnMouseClicked((e)->sunCollect(img));
 		transition.setNode(img);
-		transition.setToY(500);
+		transition.setToY(700);
 		transition.play();
 	}
 

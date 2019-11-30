@@ -5,7 +5,7 @@ import javafx.scene.image.ImageView;
 public class Zombie {
     private static ImageView image;
     private boolean isAlive = true;
-    private int health = 4;
+    private int health = 5;
     private static  int attackVal = 1;
 
     public boolean isAlive() {
