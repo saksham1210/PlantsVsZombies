@@ -1,6 +1,7 @@
 package Main;
 
-import javafx.animation.*;
+import javafx.animation.AnimationTimer;
+import javafx.animation.TranslateTransition;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,10 +16,12 @@ import javafx.scene.input.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import java.util.concurrent.TimeUnit;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.logging.Level;
 
 public class gamePreviewController {
 	public Button pauseButton;
@@ -33,6 +36,7 @@ public class gamePreviewController {
 	public ImageView lawnmower4;
 	public ImageView lawnmower5;
 	public Label sunTockens;
+	//public Label gameWon;
 	public GridPane gridPane_;
 	public Image img;
 	public ArrayList<ImageView> Zombies;
@@ -45,6 +49,7 @@ public class gamePreviewController {
 	public ArrayList<ImageView> Peas;
 	public ArrayList<ImageView> Sunflowers;
 	public double lastNanoTime;
+	public int TotalZombiesSpawned;
 	public ArrayList<Boolean> zombie_in_row;
 	public static Game game;
 
@@ -55,6 +60,7 @@ public class gamePreviewController {
 		{
 			zombie_in_row.add(false);
 		}
+		TotalZombiesSpawned=0;
 		Plants=new ArrayList<ImageView>();
 		Zombies=new ArrayList<ImageView>();
 		Sunflowers=new ArrayList<ImageView>();
@@ -68,23 +74,56 @@ public class gamePreviewController {
 	public void initialize()
 	{
 		final int[] counter = {0};
+		checkWin();
 		AnimationTimer timer = new AnimationTimer() {
 			@Override
 			public void handle(long now) {
 				double time = (now - lastNanoTime)/1000000000;
-				if (Zombies.size()<=7) {
 					if(time >= 5.0)
 					{
+						if (TotalZombiesSpawned>=4)
+						{
+							stop();
+						}
 						counter[0]++;
 						spawn_Zombie();
 						if (counter[0] %2 ==0)
 							spawn_Sun();
 						lastNanoTime = now;
 					}
-				}
-				if (time>=14){
+				if (time>=10){
 					spawn_Sun();
 					lastNanoTime = now;
+				}
+			}
+		};
+		timer.start();
+	}
+
+	public void checkWin()
+	{
+		AnimationTimer timer=new AnimationTimer() {
+			@Override
+			public void handle(long l) {
+				if (Zombies.size()==0 && TotalZombiesSpawned>=4)
+				{
+					//gameWon.setVisible(true);
+					try {
+						TimeUnit.SECONDS.sleep(3);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					try {
+						Parent root = FXMLLoader.load(getClass().getResource("main.fxml"));
+						Stage primaryStage = (Stage) sunTockens.getScene().getWindow();
+						primaryStage.setTitle("isPvZ : Main Menu");
+						primaryStage.setScene(new Scene(root, 1500, 800));
+						primaryStage.show();
+					}
+					catch(Exception e){
+						System.out.println(e.getMessage());
+					}
+					//System.out.exit();
 				}
 			}
 		};
@@ -218,7 +257,7 @@ public class gamePreviewController {
 			@Override
 			public void handle(long now) {
 				double time = (now - last_time)/1000000000;
-				if (time>=10){
+				if (time>=4){
 					ProduceSun(img_v);
 					last_time = now;
 				}
@@ -249,9 +288,9 @@ public class gamePreviewController {
 						gridPane_.getChildren().remove(target);
 						target.setImage(null);
 						Zombies.remove(target);
-						System.gc();
+						//System.gc();
 					}
-					System.out.println("Intersection detected");
+					//System.out.println("Intersection detected");
 					pea.setX(img.getX());
 				}
 			}
@@ -282,6 +321,8 @@ public class gamePreviewController {
 		Zombie zom=new Zombie(zombie);
 		zombie_list.add(zom);
 		zombie_hash.put(zombie,zom);
+		TotalZombiesSpawned+=1;
+		System.out.println(TotalZombiesSpawned+"  totalll");
 		Random random=new Random();
 		int index_y=random.nextInt(5);
 		zombie_in_row.set(index_y,true);
@@ -333,7 +374,7 @@ public class gamePreviewController {
 				}
 				//System.out.println(img.getY());
 				img.translateXProperty().setValue(img.getX());
-				img.setX(img.getX() - 0.35);
+				img.setX(img.getX() - 0.15);
 			}
 		};
 		timer.start();
