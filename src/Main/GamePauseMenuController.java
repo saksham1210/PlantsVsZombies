@@ -29,6 +29,15 @@ public class GamePauseMenuController {
 	}
 
 	public void resumeGame () {
-
+		try {
+			Parent root = FXMLLoader.load(getClass().getResource("gamePreview.fxml"));
+			Stage primaryStage = (Stage) exitButton.getScene().getWindow();
+			primaryStage.setTitle("isPvZ : Level 1");
+			primaryStage.setScene(new Scene(root, 1500, 800));
+			primaryStage.show();
+		}
+		catch(Exception e){
+			System.out.println(e.getMessage());
+		}
 	}
 }

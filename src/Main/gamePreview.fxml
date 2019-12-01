@@ -28,21 +28,16 @@
             <Image url="@PvZpics/Peashooter_HD_Seed.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="landmine" fitHeight="99.0" fitWidth="72.0" layoutX="518.0" layoutY="8.0" onDragDetected="#handleDragDetect" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@PvZpics/Potato_Mine_Seed.png" />
-         </image>
-      </ImageView>
-      <ImageView fx:id="cherrybomb" fitHeight="99.0" fitWidth="72.0" layoutX="590.0" layoutY="8.0" onDragDetected="#handleDragDetect" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@PvZpics/Cherry_Bomb_Seed.png" />
-         </image>
-      </ImageView>
-      <ImageView fx:id="threepeater" fitHeight="99.0" fitWidth="72.0" layoutX="662.0" layoutY="8.0" onDragDetected="#handleDragDetect" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@PvZpics/Threepeater_Seed.jpg" />
-         </image>
-      </ImageView>
+<!--      <ImageView fx:id="landmine" fitHeight="99.0" fitWidth="72.0" layoutX="518.0" layoutY="8.0" onDragDetected="#handleDragDetect" pickOnBounds="true" preserveRatio="true">-->
+<!--         <image>-->
+<!--            <Image url="@PvZpics/Potato_Mine_Seed.png" />-->
+<!--         </image>-->
+<!--      </ImageView>-->
+<!--      <ImageView fx:id="cherrybomb" fitHeight="99.0" fitWidth="72.0" layoutX="590.0" layoutY="8.0" onDragDetected="#handleDragDetect" pickOnBounds="true" preserveRatio="true">-->
+<!--         <image>-->
+<!--            <Image url="@PvZpics/Cherry_Bomb_Seed.png" />-->
+<!--         </image>-->
+<!--      </ImageView>-->
       <ImageView fx:id="lawnmower1" fitHeight="70.0" fitWidth="90.0" layoutX="187.0" layoutY="135.0"  pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@PvZpics/lawn_mower.gif" />

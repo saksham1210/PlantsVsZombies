@@ -27,8 +27,7 @@ public class CreateNewProfileController {
 			primaryStage.setTitle("isPvZ : Main Menu");
 			primaryStage.setScene(new Scene(root, 1500, 800));
 			primaryStage.show();
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
 	}

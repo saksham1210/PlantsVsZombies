@@ -73,7 +73,7 @@ public class gamePreviewController {
 	@FXML
 	public void initialize()
 	{
-		final int[] counter = {0};
+		final int[] counter = {0,0};
 		checkWin();
 		AnimationTimer timer = new AnimationTimer() {
 			@Override
@@ -81,6 +81,7 @@ public class gamePreviewController {
 				double time = (now - lastNanoTime)/1000000000;
 					if(time >= 5.0)
 					{
+						counter[1]++;
 						if (TotalZombiesSpawned>=4)
 						{
 							stop();
@@ -89,6 +90,8 @@ public class gamePreviewController {
 						spawn_Zombie();
 						if (counter[0] %2 ==0)
 							spawn_Sun();
+						if (counter[1]==3)
+							spawn_Sun_spec();
 						lastNanoTime = now;
 					}
 				if (time>=10){
@@ -160,22 +163,22 @@ public class gamePreviewController {
 			cb.putImage(img);
 			db.setContent(cb);
 		}
-		if (event.getSource()==landmine & Integer.parseInt(sunTockens.getText())>=25)
-		{
-			Dragboard db= landmine.startDragAndDrop(TransferMode.ANY);
-			img = new Image(".\\Main\\PvZpics\\PotatoMineHD.png");
-			ClipboardContent cb =new ClipboardContent();
-			cb.putImage(img);
-			db.setContent(cb);
-		}
-		if (event.getSource()==threepeater & Integer.parseInt(sunTockens.getText())>=325)
-		{
-			Dragboard db= threepeater.startDragAndDrop(TransferMode.ANY);
-			img = new Image(".\\Main\\PvZpics\\Threepeater2009HD.png");
-			ClipboardContent cb =new ClipboardContent();
-			cb.putImage(img);
-			db.setContent(cb);
-		}
+//		if (event.getSource()==landmine & Integer.parseInt(sunTockens.getText())>=25)
+//		{
+//			Dragboard db= landmine.startDragAndDrop(TransferMode.ANY);
+//			img = new Image(".\\Main\\PvZpics\\PotatoMineHD.png");
+//			ClipboardContent cb =new ClipboardContent();
+//			cb.putImage(img);
+//			db.setContent(cb);
+//		}
+//		if (event.getSource()==threepeater & Integer.parseInt(sunTockens.getText())>=325)
+//		{
+//			Dragboard db= threepeater.startDragAndDrop(TransferMode.ANY);
+//			img = new Image(".\\Main\\PvZpics\\Threepeater2009HD.png");
+//			ClipboardContent cb =new ClipboardContent();
+//			cb.putImage(img);
+//			db.setContent(cb);
+//		}
 		if (event.getSource()==cherrybomb & Integer.parseInt(sunTockens.getText())>=150)
 		{
 			Dragboard db= cherrybomb.startDragAndDrop(TransferMode.ANY);
@@ -234,21 +237,17 @@ public class gamePreviewController {
 			sunTockens.setText(Integer.toString(Integer.parseInt(sunTockens.getText())-50));
 			start_sun(img_v);
 		}
-		else if (clipboard_img.getHeight()==110.0) //THREEPEATER
-		{
-			System.out.println("Im Threepeater");
-			sunTockens.setText(Integer.toString(Integer.parseInt(sunTockens.getText())-325));
-		}
-		else if (clipboard_img.getHeight()==97.0) //CHERRYBOMB
-		{
-			System.out.println("Im Cherrybomb");
-			sunTockens.setText(Integer.toString(Integer.parseInt(sunTockens.getText())-150));
-		}
-		else if (clipboard_img.getHeight()==66.0) //LANDMINE
-		{
-			System.out.println("Im Landmine");
-			sunTockens.setText(Integer.toString(Integer.parseInt(sunTockens.getText())-25));
-		}
+//
+//		else if (clipboard_img.getHeight()==97.0) //CHERRYBOMB
+//		{
+//			System.out.println("Im Cherrybomb");
+//			sunTockens.setText(Integer.toString(Integer.parseInt(sunTockens.getText())-150));
+//		}
+//		else if (clipboard_img.getHeight()==66.0) //LANDMINE
+//		{
+//			System.out.println("Im Landmine");
+//			sunTockens.setText(Integer.toString(Integer.parseInt(sunTockens.getText())-25));
+//		}
 	}
 
 	public void start_sun(ImageView img_v){
@@ -257,7 +256,7 @@ public class gamePreviewController {
 			@Override
 			public void handle(long now) {
 				double time = (now - last_time)/1000000000;
-				if (time>=4){
+				if (time>=6){
 					ProduceSun(img_v);
 					last_time = now;
 				}
@@ -273,7 +272,19 @@ public class gamePreviewController {
 		gridPane_.add(sun, GridPane.getColumnIndex(sunpro), GridPane.getRowIndex(sunpro));
 
 	}
-
+//	public void start_sun_spec(ImageView img_v){
+//		AnimationTimer timer = new AnimationTimer() {
+//			double last_time= lastNanoTime;
+//			@Override
+//			public void handle(long now) {
+//				double time = (now - last_time)/1000000000;
+//				if (time>=20){
+//					ProduceSun(img_v);
+//					last_time = now;
+//				}
+//			}
+//		}; timer.start();
+//	}
 
 	public void shootPea(ImageView img)
 	{
@@ -341,6 +352,36 @@ public class gamePreviewController {
 		Suns.add(sun);
 		moveSun(sun);
 	}
+	public void spawn_Sun_spec()
+	{
+		ImageView sun=new ImageView(new Image(".\\Main\\PvZpics\\special.png"));
+		Random random=new Random();
+		sun.setFitHeight(70);
+		sun.setFitWidth(70);
+		int index_x=random.nextInt(8);
+		index_x+=1;
+		gridPane_.add(sun,index_x,0);
+		Suns.add(sun);
+		moveSun_spec(sun);
+	}
+	public void sunCollect_spec (ImageView sun) {
+		Game.collectSun();
+		sun.setVisible(false);
+		int val = Integer.parseInt(sunTockens.getText());
+		val = 200;
+		sunTockens.setText((Integer.toString(val)));
+		System.out.println("added");
+	}
+	public void moveSun_spec(ImageView img)
+	{
+		img.setVisible(true);
+		TranslateTransition transition = new TranslateTransition();
+		transition.setDuration(Duration.seconds(12));
+		img.setOnMouseClicked((e)->sunCollect_spec(img));
+		transition.setNode(img);
+		transition.setToY(700);
+		transition.play();
+	}
 
 	public void sunCollect (ImageView sun) {
 		Game.collectSun();
@@ -363,18 +404,34 @@ public class gamePreviewController {
 
 	public void moveZombie(ImageView img)
     {
+		ChangeListener<Number> checkIntersection = (ob, n, n1)->{
+			for (ImageView target : Zombies) {
+				if (landmine.getBoundsInParent().intersects(target.getBoundsInParent())) {
+//
+					//System.out.println("Intersection detected");
+				}
+			}
+		};
 		img.setVisible(true);
 		AnimationTimer timer = new AnimationTimer() {
 			@Override
 			public void handle(long now) {
+				//img.translateXProperty().addListener(checkIntersection);
 				if (img.getX()<(-750))
 				{
 					img.setVisible(false);
 					moveLawnMower(img.getX(), GridPane.getRowIndex(img));
 				}
-				//System.out.println(img.getY());
-				img.translateXProperty().setValue(img.getX());
-				img.setX(img.getX() - 0.15);
+//				if (landmine.getBoundsInParent().intersects(img.getBoundsInParent())) {
+//					//Zombie temp = zombie_hash.get(target);
+//					//temp.getAttacked();
+//					//System.out.println("Intersection detected");
+//				}
+				else{
+					img.translateXProperty().setValue(img.getX());
+					img.setX(img.getX() - 0.15);
+				}
+
 			}
 		};
 		timer.start();

@@ -31,7 +31,7 @@
                   <Font name="Gadugi Bold" size="18.0" />
                </font>
             </Button>
-            <Button alignment="CENTER" layoutX="10.0" layoutY="45.0" mnemonicParsing="false" onMouseClicked="#exitGame" onMouseDragged="#exitGame" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #dcffcc;" text="EXIT" textFill="#1578a5">
+            <Button alignment="CENTER" layoutX="10.0" layoutY="45.0" mnemonicParsing="false" onMouseClicked="#exitGame" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #dcffcc;" text="EXIT" textFill="#1578a5">
                <font>
                   <Font name="Gadugi Bold" size="18.0" />
                </font>

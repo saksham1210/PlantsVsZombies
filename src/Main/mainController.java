@@ -48,6 +48,15 @@ public class mainController implements Initializable {
 	}
 
 	public void chooseLevel () {
-		// does nothing as of now
+		try {
+			Parent root = FXMLLoader.load(getClass().getResource("chooseLevel.fxml"));
+			Stage primaryStage = (Stage) startButton.getScene().getWindow();
+			primaryStage.setTitle("isPvZ : Choose Level");
+			primaryStage.setScene(new Scene(root, 1500, 800));
+			primaryStage.show();
+		}
+		catch(Exception e){
+			System.out.println(e.getMessage());
+		}
 	}
 }
