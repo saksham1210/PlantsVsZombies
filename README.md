@@ -1,5 +1,5 @@
 # PlantsVsZombies
-Developed own clone of the Plants vs. Zombies game using Java and JavaFX.
+Developed own clone of the Plants vs. Zombies game using Java (JDK-11) and JavaFX (2.0).
 ## UML Diagram
 [Google Drive Link](https://drive.google.com/file/d/1UhpV6NkVzcyv_fXAdLRY7XQQwwHtzQcS/view?usp=sharing)
 ## Use Case
